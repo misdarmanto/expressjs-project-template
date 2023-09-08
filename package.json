@@ -1,0 +1,51 @@
+{
+	"name": "be-simerdeka",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"build": "tsc",
+		"start": "tsc && node ./build/app.js",
+		"dev": "nodemon app.ts",
+		"migrate:up": "npx sequelize-cli db:migrate",
+		"migrate:undo": "npx sequelize-cli db:migrate:undo"
+	},
+	"keywords": [
+		"simerdeka"
+	],
+	"author": "Misdar Manto",
+	"license": "ISC",
+	"dependencies": {
+		"@types/multer": "^1.4.7",
+		"axios": "^0.21.1",
+		"bullmq": "^1.40.1",
+		"cluster": "^0.7.7",
+		"cookie-parser": "^1.4.6",
+		"cors": "^2.8.5",
+		"dotenv": "^10.0.0",
+		"express": "^4.17.3",
+		"http": "^0.0.1-security",
+		"http-status-codes": "^2.1.4",
+		"jsonwebtoken": "^9.0.0",
+		"moment": "^2.29.1",
+		"multer": "^1.4.4",
+		"mysql2": "^2.2.5",
+		"path": "^0.12.7",
+		"sequelize": "^6.32.1",
+		"sequelize-cli": "^6.6.1",
+		"ts-node": "^10.5.0",
+		"uuid": "^8.3.2"
+	},
+	"devDependencies": {
+		"@types/body-parser": "^1.19.2",
+		"@types/cookie-parser": "^1.4.2",
+		"@types/cors": "^2.8.12",
+		"@types/express": "^4.17.13",
+		"@types/jsonwebtoken": "^9.0.2",
+		"@types/node": "^16.11.19",
+		"@types/uuid": "^8.3.1",
+		"@types/validator": "^13.7.1",
+		"nodemon": "^2.0.12",
+		"typescript": "^4.5.4"
+	}
+}
