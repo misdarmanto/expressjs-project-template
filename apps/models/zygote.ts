@@ -7,12 +7,12 @@ export const ZygoteModel = {
 		primaryKey: true,
 		allowNull: false,
 	},
-	createdOn: {
+	createdAt: {
 		type: DataTypes.DATE,
 		allowNull: false,
 		defaultValue: Sequelize.fn("now"),
 	},
-	modifiedOn: {
+	updatedAt: {
 		type: DataTypes.DATE,
 		allowNull: true,
 	},
@@ -25,7 +25,7 @@ export const ZygoteModel = {
 
 export interface ZygoteAttributes {
 	id: number;
-	createdOn: String;
-	modifiedOn: String | null;
+	createdAt: String;
+	updatedAt: String | null;
 	deleted: number;
 }

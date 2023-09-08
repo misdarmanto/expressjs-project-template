@@ -2,37 +2,32 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from ".";
 import { ZygoteAttributes, ZygoteModel } from "./zygote";
 
-export interface AcademicAttributes extends ZygoteAttributes {
-	academicId: string;
-	academicName: string;
-	academicEmail: string;
+export interface CrudExampleAttributes extends ZygoteAttributes {
+	crudExampleId: string;
+	crudExampleName: string;
 }
 
 // we're telling the Model that 'id' is optional
 // when creating an instance of the model (such as using Model.create()).
-type AcademicCreationAttributes = Optional<
-	AcademicAttributes,
-	"id" | "createdOn" | "modifiedOn"
+type CrudExampleCreationAttributes = Optional<
+	CrudExampleAttributes,
+	"id" | "createdAt" | "updatedAt"
 >;
 
 // We need to declare an interface for our model that is basically what our class would be
-interface AcademicInstance
-	extends Model<AcademicAttributes, AcademicCreationAttributes>,
-		AcademicAttributes {}
+interface CrudExampleInstance
+	extends Model<CrudExampleAttributes, CrudExampleCreationAttributes>,
+		CrudExampleAttributes {}
 
-export const AcademicModel = sequelize.define<AcademicInstance>(
-	"academic",
+export const CrudExampleModel = sequelize.define<CrudExampleInstance>(
+	"crud_example",
 	{
 		...ZygoteModel,
-		academicId: {
+		crudExampleId: {
 			type: DataTypes.STRING,
 			allowNull: false,
 		},
-		academicName: {
-			type: DataTypes.STRING,
-			allowNull: false,
-		},
-		academicEmail: {
+		crudExampleName: {
 			type: DataTypes.STRING,
 			allowNull: false,
 		},
@@ -40,7 +35,7 @@ export const AcademicModel = sequelize.define<AcademicInstance>(
 	{
 		...sequelize,
 		timestamps: false,
-		tableName: "academic",
+		tableName: "crud_example",
 		deletedAt: false,
 		paranoid: true,
 		underscored: true,

@@ -1,5 +1,5 @@
 {
-	"name": "be-simerdeka",
+	"name": "express js project template",
 	"version": "1.0.0",
 	"description": "",
 	"main": "index.js",
@@ -11,7 +11,7 @@
 		"migrate:undo": "npx sequelize-cli db:migrate:undo"
 	},
 	"keywords": [
-		"simerdeka"
+		"express js"
 	],
 	"author": "Misdar Manto",
 	"license": "ISC",
