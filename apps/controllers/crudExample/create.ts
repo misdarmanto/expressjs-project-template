@@ -3,13 +3,13 @@ import { StatusCodes } from "http-status-codes";
 import { ResponseData, ResponseDataAttributes } from "../../utilities/response";
 import { requestChecker } from "../../utilities/requestCheker";
 import { v4 as uuidv4 } from "uuid";
-import { AcademicAttributes, AcademicModel } from "../../models/academic";
+import { CrudExampleModel, CrudExampleAttributes } from "../../models/crudExample";
 
-export const create = async (req: any, res: Response) => {
-	const requestBody = <AcademicAttributes>req.body;
+export const createCrudExample = async (req: any, res: Response) => {
+	const requestBody = <CrudExampleAttributes>req.body;
 
 	const emptyField = requestChecker({
-		requireList: ["academicName", "academicEmail"],
+		requireList: ["crudExampleName"],
 		requestData: requestBody,
 	});
 
@@ -20,8 +20,9 @@ export const create = async (req: any, res: Response) => {
 	}
 
 	try {
-		requestBody.academicId = uuidv4();
-		await AcademicModel.create(requestBody);
+		requestBody.crudExampleId = uuidv4();
+		await CrudExampleModel.create(requestBody);
+
 		const response = <ResponseDataAttributes>ResponseData.default;
 		const result = { message: "create academic success" };
 		response.data = result;

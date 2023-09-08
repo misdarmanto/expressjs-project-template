@@ -4,13 +4,13 @@ import { ResponseData, ResponseDataAttributes } from "../../utilities/response";
 import { Op } from "sequelize";
 import { Pagination } from "../../utilities/pagination";
 import { requestChecker } from "../../utilities/requestCheker";
-import { AcademicModel } from "../../models/academic";
 import { CONSOLE } from "../../utilities/log";
+import { CrudExampleAttributes, CrudExampleModel } from "../../models/crudExample";
 
-export const findAll = async (req: any, res: Response) => {
+export const findAllCrudExample = async (req: any, res: Response) => {
 	try {
 		const page = new Pagination(+req.query.page || 0, +req.query.size || 10);
-		const result = await AcademicModel.findAndCountAll({
+		const result = await CrudExampleModel.findAndCountAll({
 			where: {
 				deleted: { [Op.eq]: 0 },
 				...(req.query.search && {
@@ -35,10 +35,12 @@ export const findAll = async (req: any, res: Response) => {
 	}
 };
 
-export const findOne = async (req: any, res: Response) => {
+export const findOneCrudExample = async (req: any, res: Response) => {
+	const requestParams = <CrudExampleAttributes>req.params;
+
 	const emptyField = requestChecker({
-		requireList: ["id"],
-		requestData: req.params,
+		requireList: ["crudExampleId"],
+		requestData: requestParams,
 	});
 
 	if (emptyField) {
@@ -48,15 +50,15 @@ export const findOne = async (req: any, res: Response) => {
 	}
 
 	try {
-		const result = await AcademicModel.findOne({
+		const result = await CrudExampleModel.findOne({
 			where: {
 				deleted: { [Op.eq]: 0 },
-				academicId: { [Op.eq]: req.params.id },
+				crudExampleId: { [Op.eq]: requestParams.crudExampleId },
 			},
 		});
 
 		if (!result) {
-			const message = `academic not found!`;
+			const message = `not found!`;
 			const response = <ResponseDataAttributes>ResponseData.error(message);
 			return res.status(StatusCodes.NOT_FOUND).json(response);
 		}

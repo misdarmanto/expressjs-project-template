@@ -5,23 +5,19 @@ const { ZygoteModel } = require("../zygote");
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
 	async up(queryInterface, Sequelize) {
-		await queryInterface.createTable("academic", {
+		await queryInterface.createTable("crud_example", {
 			...ZygoteModel,
-			academic_id: {
+			crudExampleId: {
 				type: Sequelize.STRING,
 				allowNull: false,
 			},
-			academic_name: {
-				type: Sequelize.STRING,
-				allowNull: false,
-			},
-			academic_email: {
+			crudExampleName: {
 				type: Sequelize.STRING,
 				allowNull: false,
 			},
 		});
 	},
 	async down(queryInterface, Sequelize) {
-		await queryInterface.dropTable("academic");
+		await queryInterface.dropTable("crud_example");
 	},
 };

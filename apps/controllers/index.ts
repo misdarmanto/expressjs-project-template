@@ -5,7 +5,7 @@ import { ResponseData, ResponseDataAttributes } from "../utilities/response";
 export const index = async (req: Request, res: Response) => {
 	try {
 		const data = {
-			about_me: "Welcome to Simerdeka API V1",
+			about_me: "Welcome to Crud Example API V1",
 		};
 		const response = <ResponseDataAttributes>ResponseData.default;
 		response.data = data;

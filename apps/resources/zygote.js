@@ -7,12 +7,12 @@ const ZygoteModel = {
 		primaryKey: true,
 		allowNull: false,
 	},
-	created_on: {
+	created_at: {
 		type: Sequelize.DATE,
 		allowNull: false,
 		defaultValue: Sequelize.fn("now"),
 	},
-	modified_on: {
+	updated_at: {
 		type: Sequelize.DATE,
 		allowNull: true,
 	},
