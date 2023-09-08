@@ -1,4 +1,4 @@
-import { DataTypes, Model, Optional } from "sequelize";
+import { DataTypes, Model, Optional, UUIDV4 } from "sequelize";
 import { sequelize } from ".";
 import { ZygoteAttributes, ZygoteModel } from "./zygote";
 
@@ -24,8 +24,9 @@ export const CrudExampleModel = sequelize.define<CrudExampleInstance>(
 	{
 		...ZygoteModel,
 		crudExampleId: {
-			type: DataTypes.STRING,
+			type: DataTypes.UUID,
 			allowNull: false,
+			defaultValue: UUIDV4(),
 		},
 		crudExampleName: {
 			type: DataTypes.STRING,

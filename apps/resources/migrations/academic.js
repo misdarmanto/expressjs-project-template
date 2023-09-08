@@ -8,8 +8,9 @@ module.exports = {
 		await queryInterface.createTable("crud_example", {
 			...ZygoteModel,
 			crudExampleId: {
-				type: Sequelize.STRING,
+				type: Sequelize.UUID,
 				allowNull: false,
+				defaultValue: Sequelize.UUIDV4,
 			},
 			crudExampleName: {
 				type: Sequelize.STRING,
