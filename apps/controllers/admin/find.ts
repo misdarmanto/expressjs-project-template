@@ -2,47 +2,54 @@ import { Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { ResponseData, ResponseDataAttributes } from "../../utilities/response";
 import { Op } from "sequelize";
+import { AdminModel } from "../../models/admin";
 import { Pagination } from "../../utilities/pagination";
 import { requestChecker } from "../../utilities/requestCheker";
-import { CONSOLE } from "../../utilities/log";
-import { CrudExampleAttributes, CrudExampleModel } from "../../models/crudExample";
+import { isSuperAdmin } from "../../utilities/checkAuth";
 
-export const findAllCrudExample = async (req: any, res: Response) => {
+export const findAllAdmin = async (req: any, res: Response) => {
 	try {
 		const page = new Pagination(+req.query.page || 0, +req.query.size || 10);
-		const result = await CrudExampleModel.findAndCountAll({
+		const users = await AdminModel.findAndCountAll({
 			where: {
 				deleted: { [Op.eq]: 0 },
+				adminId: { [Op.not]: req.header("x-user-id") },
 				...(req.query.search && {
 					[Op.or]: [
-						{ crudExampleName: { [Op.like]: `%${req.query.search}%` } },
+						{ adminName: { [Op.like]: `%${req.query.search}%` } },
+						{ adminEmail: { [Op.like]: `%${req.query.search}%` } },
 					],
 				}),
 			},
+			attributes: [
+				"adminId",
+				"adminName",
+				"adminEmail",
+				"adminRole",
+				"createdAt",
+				"updatedAt",
+			],
 			order: [["id", "desc"]],
 			...(req.query.pagination == "true" && {
 				limit: page.limit,
 				offset: page.offset,
 			}),
 		});
-
 		const response = <ResponseDataAttributes>ResponseData.default;
-		response.data = page.data(result);
+		response.data = page.data(users);
 		return res.status(StatusCodes.OK).json(response);
 	} catch (error: any) {
-		CONSOLE.error(error.message);
+		console.log(error.message);
 		const message = `unable to process request! error ${error.message}`;
 		const response = <ResponseDataAttributes>ResponseData.error(message);
 		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(response);
 	}
 };
 
-export const findOneCrudExample = async (req: any, res: Response) => {
-	const requestParams = <CrudExampleAttributes>req.params;
-
+export const findOneAdmin = async (req: any, res: Response) => {
 	const emptyField = requestChecker({
-		requireList: ["crudExampleId"],
-		requestData: requestParams,
+		requireList: ["adminId", "x-user-id"],
+		requestData: { ...req.params, ...req.headers },
 	});
 
 	if (emptyField) {
@@ -52,23 +59,42 @@ export const findOneCrudExample = async (req: any, res: Response) => {
 	}
 
 	try {
-		const result = await CrudExampleModel.findOne({
-			where: {
-				deleted: { [Op.eq]: 0 },
-				crudExampleId: { [Op.eq]: requestParams.crudExampleId },
-			},
+		const checkCurrentAdmin = await isSuperAdmin({
+			adminId: req.header("x-user-id"),
 		});
 
-		if (!result) {
-			const message = `not found!`;
+		if (!checkCurrentAdmin) {
+			const message = `access denied!`;
+			const response = <ResponseDataAttributes>ResponseData.error(message);
+			return res.status(StatusCodes.UNAUTHORIZED).json(response);
+		}
+
+		const admin = await AdminModel.findOne({
+			where: {
+				deleted: { [Op.eq]: 0 },
+				adminId: { [Op.eq]: req.params.adminId },
+			},
+			attributes: [
+				"adminId",
+				"adminName",
+				"adminEmail",
+				"adminRole",
+				"createdAt",
+				"updatedAt",
+			],
+		});
+
+		if (!admin) {
+			const message = `admin not found!`;
 			const response = <ResponseDataAttributes>ResponseData.error(message);
 			return res.status(StatusCodes.NOT_FOUND).json(response);
 		}
 
 		const response = <ResponseDataAttributes>ResponseData.default;
-		response.data = result;
+		response.data = admin;
 		return res.status(StatusCodes.OK).json(response);
 	} catch (error: any) {
+		console.log(error.message);
 		const message = `unable to process request! error ${error.message}`;
 		const response = <ResponseDataAttributes>ResponseData.error(message);
 		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(response);

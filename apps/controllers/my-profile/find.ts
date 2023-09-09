@@ -3,14 +3,12 @@ import { StatusCodes } from "http-status-codes";
 import { ResponseData, ResponseDataAttributes } from "../../utilities/response";
 import { Op } from "sequelize";
 import { requestChecker } from "../../utilities/requestCheker";
-import { CrudExampleAttributes, CrudExampleModel } from "../../models/crudExample";
+import { AdminModel } from "../../models/admin";
 
-export const removeCrudExample = async (req: any, res: Response) => {
-	const requestQuery = <CrudExampleAttributes>req.query;
-
+export const findMyProfile = async (req: any, res: Response) => {
 	const emptyField = requestChecker({
-		requireList: ["crudExampleId"],
-		requestData: requestQuery,
+		requireList: ["x-user-id"],
+		requestData: req.headers,
 	});
 
 	if (emptyField) {
@@ -20,26 +18,32 @@ export const removeCrudExample = async (req: any, res: Response) => {
 	}
 
 	try {
-		const result = await CrudExampleModel.findOne({
+		const admin = await AdminModel.findOne({
 			where: {
 				deleted: { [Op.eq]: 0 },
-				crudExampleId: { [Op.eq]: requestQuery.crudExampleId },
+				adminId: { [Op.eq]: req.header("x-user-id") },
 			},
+			attributes: [
+				"adminId",
+				"adminName",
+				"adminEmail",
+				"adminRole",
+				"createdAt",
+				"updatedAt",
+			],
 		});
 
-		if (!result) {
-			const message = `not found!`;
+		if (!admin) {
+			const message = `user not found!`;
 			const response = <ResponseDataAttributes>ResponseData.error(message);
 			return res.status(StatusCodes.NOT_FOUND).json(response);
 		}
 
-		result.deleted = 1;
-		result.save();
-
 		const response = <ResponseDataAttributes>ResponseData.default;
-		response.data = { message: "success" };
+		response.data = admin;
 		return res.status(StatusCodes.OK).json(response);
 	} catch (error: any) {
+		console.log(error.message);
 		const message = `unable to process request! error ${error.message}`;
 		const response = <ResponseDataAttributes>ResponseData.error(message);
 		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(response);

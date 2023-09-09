@@ -3,12 +3,12 @@ import { crudExampleController } from "../../controllers/crudExample";
 
 export const crudExampleRoutes = (app: Express) => {
 	const route = express.Router();
-	app.use("/api/v1/crudExample", route);
+	app.use("/api/v1/crud-example", route);
 
-	route.get("/", (req: Request, res: Response) =>
+	route.get("/list", (req: Request, res: Response) =>
 		crudExampleController.findAll(req, res)
 	);
-	route.get("/detail/:id", (req: Request, res: Response) =>
+	route.get("/detail/:crudExampleId", (req: Request, res: Response) =>
 		crudExampleController.findOne(req, res)
 	);
 	route.post("/", (req: Request, res: Response) =>

@@ -2,15 +2,15 @@ import { Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { ResponseData, ResponseDataAttributes } from "../../utilities/response";
 import { Op } from "sequelize";
+import { AdminAttributes, AdminModel } from "../../models/admin";
 import { requestChecker } from "../../utilities/requestCheker";
-import { CrudExampleAttributes, CrudExampleModel } from "../../models/crudExample";
+import { isSuperAdmin } from "../../utilities/checkAuth";
 
-export const removeCrudExample = async (req: any, res: Response) => {
-	const requestQuery = <CrudExampleAttributes>req.query;
-
+export const removeAdmin = async (req: any, res: Response) => {
+	const requestQuery = <AdminAttributes>req.query;
 	const emptyField = requestChecker({
-		requireList: ["crudExampleId"],
-		requestData: requestQuery,
+		requireList: ["x-user-id", "adminId"],
+		requestData: { ...req.query, ...req.headers },
 	});
 
 	if (emptyField) {
@@ -20,26 +20,25 @@ export const removeCrudExample = async (req: any, res: Response) => {
 	}
 
 	try {
-		const result = await CrudExampleModel.findOne({
-			where: {
-				deleted: { [Op.eq]: 0 },
-				crudExampleId: { [Op.eq]: requestQuery.crudExampleId },
-			},
+		const checkCurrentAdmin = await isSuperAdmin({
+			adminId: req.header("x-user-id"),
 		});
 
-		if (!result) {
-			const message = `not found!`;
+		if (!checkCurrentAdmin) {
+			const message = `access denied!`;
 			const response = <ResponseDataAttributes>ResponseData.error(message);
-			return res.status(StatusCodes.NOT_FOUND).json(response);
+			return res.status(StatusCodes.UNAUTHORIZED).json(response);
 		}
 
-		result.deleted = 1;
-		result.save();
-
-		const response = <ResponseDataAttributes>ResponseData.default;
-		response.data = { message: "success" };
-		return res.status(StatusCodes.OK).json(response);
+		const result = await AdminModel.update(
+			{ deleted: 1 },
+			{
+				where: { adminId: { [Op.eq]: requestQuery.adminId } },
+			}
+		);
+		return res.status(StatusCodes.OK).json(result);
 	} catch (error: any) {
+		console.log(error.message);
 		const message = `unable to process request! error ${error.message}`;
 		const response = <ResponseDataAttributes>ResponseData.error(message);
 		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(response);

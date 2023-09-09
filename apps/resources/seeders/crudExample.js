@@ -5,10 +5,12 @@ module.exports = {
 	async up(queryInterface, Sequelize) {
 		await queryInterface.bulkInsert("crud_example", [
 			{
-				crudExampleName: "hello world 1",
+				crud_example_id: "424323423423erwerewr23423rewr",
+				crud_example_name: "hello world 1",
 			},
 			{
-				crudExampleName: "hello world 2",
+				crud_example_id: "fdsftr23453523erwerewr23423ererre443",
+				crud_example_name: "hello world 2",
 			},
 		]);
 	},

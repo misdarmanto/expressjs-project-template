@@ -7,12 +7,12 @@ module.exports = {
 	async up(queryInterface, Sequelize) {
 		await queryInterface.createTable("crud_example", {
 			...ZygoteModel,
-			crudExampleId: {
+			crud_example_id: {
 				type: Sequelize.UUID,
 				allowNull: false,
 				defaultValue: Sequelize.UUIDV4,
 			},
-			crudExampleName: {
+			crud_example_name: {
 				type: Sequelize.STRING,
 				allowNull: false,
 			},
