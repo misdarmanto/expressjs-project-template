@@ -1,22 +1,18 @@
-import { Op } from "sequelize";
-import { AdminModel } from "../models/admin";
+import { Op } from 'sequelize'
+import { AdminModel } from '../models/admin'
 
-export const isSuperAdmin = async ({ adminId }: { adminId: string }) => {
-	try {
-		const checkAdmin = await AdminModel.findOne({
-			raw: true,
-			where: {
-				deleted: { [Op.eq]: 0 },
-				adminId: { [Op.eq]: adminId },
-				adminRole: { [Op.eq]: "superAdmin" },
-			},
-		});
+interface IsSuperAdminType {
+  adminId: string
+}
 
-		if (checkAdmin) {
-			return checkAdmin;
-		}
-		return false;
-	} catch (error: any) {
-		throw error;
-	}
-};
+export const isSuperAdmin = async ({ adminId }: IsSuperAdminType): Promise<boolean> => {
+  const checkAdmin = await AdminModel.findOne({
+    raw: true,
+    where: {
+      deleted: { [Op.eq]: 0 },
+      adminId: { [Op.eq]: adminId },
+      adminRole: { [Op.eq]: 'superAdmin' }
+    }
+  })
+  return checkAdmin != null
+}

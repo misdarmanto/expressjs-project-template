@@ -1,8 +1,8 @@
-import dotenv from "dotenv";
-dotenv.config();
-import { Options, Sequelize } from "sequelize";
-import { CONFIG } from "../configs";
+import dotenv from 'dotenv'
+import { type Options, Sequelize } from 'sequelize'
+import { CONFIG } from '../configs'
+dotenv.config()
 
-const dataBaseConfig: Options | any = CONFIG.dataBase.development;
+const dataBaseConfig: Options | any = CONFIG.dataBase.development
 
-export const sequelize = new Sequelize(dataBaseConfig);
+export const sequelize = new Sequelize(dataBaseConfig)

@@ -1,11 +1,18 @@
-type RequestCheckerType = { requireList: string[]; requestData: any };
+interface RequestCheckerType {
+  requireList: string[]
+  requestData: any
+}
 
-export const requestChecker = ({ requireList, requestData }: RequestCheckerType) => {
-	const emptyField: string[] = [];
-	requireList.map((value: string) => {
-		if (!requestData[value]) {
-			emptyField.push(value);
-		}
-	});
-	return emptyField.toString();
-};
+export const requestChecker = ({
+  requireList,
+  requestData
+}: RequestCheckerType): string => {
+  const emptyField: string[] = []
+  // eslint-disable-next-line array-callback-return
+  requireList.map((value: string): void => {
+    if (requestData[value] !== null) {
+      emptyField.push(value)
+    }
+  })
+  return emptyField.toString()
+}
