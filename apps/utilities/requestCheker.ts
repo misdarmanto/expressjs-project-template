@@ -10,7 +10,7 @@ export const requestChecker = ({
   const emptyField: string[] = []
   // eslint-disable-next-line array-callback-return
   requireList.map((value: string): void => {
-    if (requestData[value] !== null) {
+    if (requestData[value] === undefined) {
       emptyField.push(value)
     }
   })
