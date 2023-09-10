@@ -3,12 +3,13 @@ import { StatusCodes } from 'http-status-codes'
 import { ResponseData } from '../../utilities/response'
 import { Op } from 'sequelize'
 import { requestChecker } from '../../utilities/requestCheker'
-import { UserModel } from '../../models/user'
+import { type UserAttributes, UserModel } from '../../models/user'
 
 export const findOne = async (req: any, res: Response): Promise<any> => {
+  const requestParams = req.params as UserAttributes
   const emptyField = requestChecker({
-    requireList: ['id'],
-    requestData: req.params
+    requireList: ['userId'],
+    requestData: requestParams
   })
 
   if (emptyField.length > 0) {
@@ -21,7 +22,7 @@ export const findOne = async (req: any, res: Response): Promise<any> => {
     const user = await UserModel.findOne({
       where: {
         deleted: { [Op.eq]: 0 },
-        userId: { [Op.eq]: req.params.id }
+        userId: { [Op.eq]: requestParams.userId }
       },
       attributes: ['userId', 'userName', 'userEmail', 'userRole']
     })

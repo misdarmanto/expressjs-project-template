@@ -9,11 +9,11 @@ import { v4 as uuidv4 } from 'uuid'
 import { generateAccessToken } from '../../utilities/jwt'
 
 export const register = async (req: any, res: Response): Promise<any> => {
-  const body = req.body as UserAttributes
+  const requestBody = req.body as UserAttributes
 
   const emptyField = requestChecker({
     requireList: ['userName', 'userEmail', 'userPassword', 'userRole'],
-    requestData: body
+    requestData: requestBody
   })
 
   if (emptyField.length > 0) {
@@ -27,7 +27,7 @@ export const register = async (req: any, res: Response): Promise<any> => {
       raw: true,
       where: {
         deleted: { [Op.eq]: 0 },
-        userEmail: { [Op.eq]: body.userEmail }
+        userEmail: { [Op.eq]: requestBody.userEmail }
       }
     })
 
@@ -37,13 +37,13 @@ export const register = async (req: any, res: Response): Promise<any> => {
       return res.status(StatusCodes.BAD_REQUEST).json(response)
     }
 
-    body.userPassword = hashPassword(body.userPassword)
-    body.userId = uuidv4()
-    await UserModel.create(body)
+    requestBody.userPassword = hashPassword(requestBody.userPassword)
+    requestBody.userId = uuidv4()
+    await UserModel.create(requestBody)
 
     const token = generateAccessToken({
-      user_id: body.userId,
-      role: 'akademik'
+      userId: requestBody.userId,
+      role: 'superAdmin'
     })
 
     const response = ResponseData.default

@@ -2,8 +2,8 @@ import jwt from 'jsonwebtoken'
 import { CONFIG } from '../configs'
 
 export interface JwtPayloadTypes {
-  user_id: string
-  role: 'mahasiswa' | 'prodi' | 'jurusan' | 'akademik' | 'biro'
+  userId: string
+  role: 'admin' | 'superAdmin'
 }
 
 export const generateAccessToken = (username: JwtPayloadTypes): any => {
